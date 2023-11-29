@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .aspect-ratio-box {
+            position: relative;
+            overflow: hidden;
+            padding-top: 100%;
+        }
+
+        .aspect-ratio-box-inside {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary py-3">
+        <div class="container-fluid px-3">
+            <a class="navbar-brand btn btn-primary badge fw-bold text-white"
+                href="/products/carts/64a4619f684402305a4ab6fa" style="font-size: 1rem; padding: 10px;">Carrito</a>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+
+            <!-- Div de Filtros -->
+            <div class="col-md-3 px-3 bg-dark py-5">
+
+                <div class="col-md-12 mb-3 border border-3 rounded p-2 text-center "
+                    style="background-color: #151515; border-color: #0a0a0a;">
+                    <form action="/products" method="GET">
+
+                        <div class="row py-2">
+                            <div class="col-md-12 text-white">
+                                <label for="category">Categoría:</label>
+                                <select name="category" id="category" class="form-control">
+                                    <option value="">Todos</option>
+                                    <option value="Guitarra">Guitarra</option>
+                                    <option value="Bajo">Bajo</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12 text-white">
+                                <label for="stock">Stock:</label>
+                                <input type="number" name="stock" id="stock" min="0" class="form-control">
+                            </div>
+
+                            <div class="col-md-12 py-2 text-white">
+                                <label for="limit">Productos por página:</label>
+                                <input type="number" name="limit" id="limit" min="1" max="100" class="form-control">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-2 me-2">Aplicar Filtros</button>
+                        <button id="clearFilters" class="btn btn-outline-dark mt-2">Borrar Filtros</button>
+
+                    </form>
+                </div>
+                       <div class="col-md-8 offset-md-2 d-flex justify-content-center mb-1 py-4">
+                    <a href="http://localhost:8080/products?limit={{products.limit}}&page={{products.page}}&sort=asc"
+                        class="btn btn-secondary mx-1">Orden ascendente</a>
+                    <a href="http://localhost:8080/products?limit={{products.limit}}&page={{products.page}}&sort=desc"
+                        class="btn btn-secondary mx-1">Orden descendente</a>
+                </div>
+
+            </div>
+
+            <!-- Visualización de Productos -->
+            <div class="col-md-9 px-5 bg-dark">
+                <div class="col-md-8 offset-md-2 d-flex justify-content-between mb-3">
+                    {{#if products.hasPrevPage}}
+                    <a href="http://localhost:8080/products?limit={{products.limit}}&page={{products.prevPage}}"
+                        class="btn btn-secondary me-auto">Anterior</a>
+                    {{/if}}
+                    {{#if products.hasNextPage}}
+                    <a href="http://localhost:8080/products?limit={{products.limit}}&page={{products.nextPage}}"
+                        class="btn btn-secondary ms-auto me-0">Siguiente</a>
+                    {{/if}}
+                </div>
+
+
+
+         
+
+                <div class="row">
+                    {{#each products.docs}}
+                    <div class="col-md-12 col-lg-4 mb-3">
+                        <div class="card">
+                            <div class="aspect-ratio-box">
+                                <img src="/img/{{this.thumbnails.[0]}}" class="card-img-top img-fluid p-2 aspect-ratio-box-inside"
+                                    alt="{{this.title}}" />
+                            </div>
+                            <div class="d-flex justify-content-between p-3">
+                                <button class="btn btn-outline-dark lead mb-0"
+                                    onclick="addCart(`{{this._id}}`)">Agregar a Carrito</button>
+                                <div class="bg-info rounded-circle d-flex align-items-center justify-content-center shadow-1-strong"
+                                    style="width: 35px; height: 35px;">
+                                    <a href="http://localhost:8080/products/product/{{this._id}}"
+                                        class="btn text-white mb-0 small rounded-circle">Info </a>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <p class="small"><a href="#!" class="text-muted">{{this.category}}</a></p>
+                                    <p class="small text-danger"><s>${{this.price}}</s></p>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h5 class="mb-0">{{this.title}}</h5>
+                                    <h5 class="text-dark mb-0">${{this.price}}</h5>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <p class="text-muted mb-0">Stock Disponible: <span class="fw-bold">{{this.stock}}</span></p>
+                                    <div class="ms-auto text-warning">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/products.js"></script>
+    <script>
+        const clearFilters = document.getElementById("clearFilters");
+        clearFilters.addEventListener("click", () => {
+            window.location.href = "/products";
+        });
+    </script>
+</body>
+
+</html>
