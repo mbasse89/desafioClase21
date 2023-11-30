@@ -21,10 +21,11 @@ router.get('/', async (req, res) => {
             ...(stock && { stock }),
         }
 
-        let sortOptions = sort === 'asc' ? { price: 1 } : (sort === 'desc' ? { price: -1 } : {})
+        let sortOptions = {}
+        if (sort === 'asc') {
+            sortOptions = { price: 1 };
+        }
         
-    
-
         const options = {
             limit,
             page,
