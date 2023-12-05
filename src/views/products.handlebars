@@ -24,11 +24,15 @@
 </head>
 
 <body>
+    <div>
+        <p>Bienvienido {{user.first_name}} {{user.last_name}}.</p>
+        <a href="/api/session/logout">Logut</a>
+    </div>
 
     <nav class="navbar navbar-expand-lg bg-body-tertiary py-3">
         <div class="container-fluid px-3">
             <a class="navbar-brand btn btn-primary badge fw-bold text-white"
-                href="/products/carts/carrito" style="font-size: 1rem; padding: 10px;">Carrito</a>
+                href="/products/carts/64a4619f684402305a4ab6fa" style="font-size: 1rem; padding: 10px;">Carrito</a>
         </div>
     </nav>
 
@@ -68,7 +72,7 @@
 
                     </form>
                 </div>
-                       <div class="col-md-8 offset-md-2 d-flex justify-content-center mb-1 py-4">
+                <div class="col-md-8 offset-md-2 d-flex justify-content-center mb-1 py-4">
                     <a href="http://localhost:8080/products?limit={{products.limit}}&page={{products.page}}&sort=asc"
                         class="btn btn-secondary mx-1">Orden ascendente</a>
                     <a href="http://localhost:8080/products?limit={{products.limit}}&page={{products.page}}&sort=desc"
@@ -92,19 +96,19 @@
 
 
 
-         
+
 
                 <div class="row">
                     {{#each products.docs}}
                     <div class="col-md-12 col-lg-4 mb-3">
                         <div class="card">
                             <div class="aspect-ratio-box">
-                                <img src="/img/{{this.thumbnails.[0]}}" class="card-img-top img-fluid p-2 aspect-ratio-box-inside"
-                                    alt="{{this.title}}" />
+                                <img src="/img/{{this.thumbnails.[0]}}"
+                                    class="card-img-top img-fluid p-2 aspect-ratio-box-inside" alt="{{this.title}}" />
                             </div>
                             <div class="d-flex justify-content-between p-3">
-                                <button class="btn btn-outline-dark lead mb-0"
-                                    onclick="addCart(`{{this._id}}`)">Agregar a Carrito</button>
+                                <button class="btn btn-outline-dark lead mb-0" onclick="addCart(`{{this._id}}`)">Agregar
+                                    a Carrito</button>
                                 <div class="bg-info rounded-circle d-flex align-items-center justify-content-center shadow-1-strong"
                                     style="width: 35px; height: 35px;">
                                     <a href="http://localhost:8080/products/product/{{this._id}}"
@@ -124,7 +128,8 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-2">
-                                    <p class="text-muted mb-0">Stock Disponible: <span class="fw-bold">{{this.stock}}</span></p>
+                                    <p class="text-muted mb-0">Stock Disponible: <span
+                                            class="fw-bold">{{this.stock}}</span></p>
                                     <div class="ms-auto text-warning">
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>

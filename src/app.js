@@ -9,6 +9,10 @@ import cartsRouter from './Router/carts.router.js'
 import viewsRouter from './Router/views.router.js'
 import messageModel from './DAO/models/message.model.js'
 import viewsProductsRouter from './Router/views.router.js'
+import routerSession from "./Router/session.router.js"
+
+import session from "express-session"
+import MongoStore from "connect-mongo"
 
 
 // Configuración de express
@@ -16,11 +20,27 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+
+
+
+
 mongoose.set("strictQuery", false)
 
 
- const mongoURL = 'mongodb+srv://matiasbasse:Luna2014@codercluster0.gatfryd.mongodb.net/'    
-const mongoDBName = 'ecommerce'
+const mongoURL = 'mongodb+srv://matiasbasse:Luna2014@codercluster0.gatfryd.mongodb.net/';
+const mongoDBName = 'ecommerce';
+
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl: mongoURL,
+    dbName: mongoDBName,
+  }),
+  secret: "secret",
+  resave: true,
+  saveUninitialized: true,
+}));
+
+
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
@@ -33,6 +53,8 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/home', viewsRouter)
 app.use('/products', viewsProductsRouter)
+app.use("/api/session", routerSession)
+
 
 
  

@@ -1,48 +1,48 @@
-import { Router } from 'express'      
-import productModel from '../DAO/models/produtcs.model.js'
-import cartModel from '../DAO/models/carts.model.js'
+import { Router } from 'express';
+import productModel from '../DAO/models/produtcs.model.js';
+import cartModel from '../DAO/models/carts.model.js';
 
 const router = Router();
 
 router.post('/', async (req, res) => {
     try {
-        const cart = req.body;
-        const addCart = await cartModel.create(cart);
-        res.json({ status: 'success', payload: addCart });
+        const cartData = req.body;
+        const newCart = await cartModel.create(cartData);
+        res.status(201).json({ status: 'success', payload: newCart });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
 router.post('/:cid/product/:pid', async (req, res) => {
     try {
-        const pid = req.params.pid;
-        const product = await productModel.findById(pid);
-        if (!product) {
-            return res.status(404).json({ error: 'Producto no válido' });
-        }
-        const cid = req.params.cid;
-        const cart = await cartModel.findById(cid);
-        if (!cart) {
-            return res.status(404).json({ error: 'Carrito no válido' });
+        const { cid, pid } = req.params;
+        const quantity = req.body.quantity || 1;
+
+        // Validar la cantidad
+        if (!Number.isInteger(quantity) || quantity <= 0) {
+            return res.status(400).json({ status: 'error', message: 'La cantidad debe ser un entero positivo' });
         }
 
-        const existingProduct = cart.products.findIndex((item) => item.product.equals(pid));
-        if (existingProduct !== -1) {
-            cart.products[existingProduct].quantity += 1;
-        } else {
-            const newProduct = {
-                product: pid,
-                quantity: 1,
-            };
-            cart.products.push(newProduct);
+        const product = await productModel.findById(pid);
+        const cart = await cartModel.findById(cid);
+
+        if (!product || !cart) {
+            return res.status(404).json({ error: 'Producto o carrito no válido' });
         }
-        const result = await cart.save();
-        res.status(200).json({ status: 'success', payload: result });
+
+        const existingProductIndex = cart.products.findIndex(item => item.product.equals(pid));
+
+        if (existingProductIndex !== -1) {
+            cart.products[existingProductIndex].quantity += quantity;
+        } else {
+            cart.products.push({ product: pid, quantity });
+        }
+
+        const updatedCart = await cart.save();
+        res.json({ status: 'success', payload: updatedCart });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 

@@ -3,11 +3,13 @@ const socket = io()
 const cart = '6567aea166d089776449df2a'
 const addCart = async (productId) => {
     try {
-        const res = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+        const res = await fetch(`/api/carts/${cart}/product/${productId}`, {
             method: 'POST',
         });
         const result = await res.json();
-        if (result.status === 'error') throw new Error(result.error);
+        if (result.status === 'error') {
+            throw new Error(result.error);
+        }
 
         // Mostrar notificación de éxito
         Toastify({
