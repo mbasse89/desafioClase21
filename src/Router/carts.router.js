@@ -46,6 +46,45 @@ router.post('/:cid/product/:pid', async (req, res) => {
     }
 });
 
+router.post('/carts/:cid/add/:pid', async (req, res) => {
+    try {
+      const { cid, pid } = req.params;
+      
+      const cart = await cartModel.findById(cid);
+      if (!cart) {
+        return res.status(404).json({ error: 'Carrito no válido' });
+      }
+  
+      const product = await productModel.findById(pid);
+      if (!product) {
+        return res.status(404).json({ error: 'Producto no válido' });
+      }
+  
+      // Agregar lógica para añadir el producto al carrito aquí
+  
+      const existingProduct = cart.products.findIndex((item) => item.product.equals(pid));
+      if (existingProduct !== -1) {
+        cart.products[existingProduct].quantity += 1;
+      } else {
+        const newProduct = {
+          product: pid,
+          quantity: 1,
+        };
+        cart.products.push(newProduct);
+      }
+  
+      const result = await cart.save();
+      
+      // Emitir el evento de actualización del carrito a través de Socket.IO
+      req.app.get('socketio').emit('updatedCarts', result.products);
+  
+      res.status(200).json({ status: 'success', payload: result });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 router.get('/:cid', async (req, res) => {
     try {
         const cid = req.params.cid;

@@ -13,6 +13,8 @@ import routerSession from "./Router/session.router.js"
 
 import session from "express-session"
 import MongoStore from "connect-mongo"
+import initializePassport from './config/passport.config.js'
+import passport from "passport"
 
 
 // Configuración de express
@@ -40,6 +42,10 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 app.engine('handlebars', handlebars.engine())
